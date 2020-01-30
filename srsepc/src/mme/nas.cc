@@ -799,7 +799,7 @@ bool nas::handle_tracking_area_update_request(uint32_t                m_tmsi,
   nas_tmp.m_ecm_ctx.mme_ue_s1ap_id = s1ap->get_next_mme_ue_s1ap_id();
 
   srslte::byte_buffer_t* nas_tx    = pool->allocate();
-  nas_tmp.pack_tracking_area_update_reject(nas_tx, LIBLTE_MME_EMM_CAUSE_IMPLICITLY_DETACHED);
+  nas_tmp.pack_tracking_area_update_reject(nas_tx, LIBLTE_MME_EMM_CAUSE_NO_SUITABLE_CELLS_IN_TRACKING_AREA);
   s1ap->send_downlink_nas_transport(enb_ue_s1ap_id, nas_tmp.m_ecm_ctx.mme_ue_s1ap_id, nas_tx, *enb_sri);
   pool->deallocate(nas_tx);
   return true;
@@ -1156,7 +1156,8 @@ bool nas::handle_tracking_area_update_request(srslte::byte_buffer_t* nas_rx)
    * this will trigger full re-attach by the UE, instead of going to a TAU request loop */
   nas_tx = pool->allocate();
   // TODO we could enable integrity protection in some cases, but UE should comply anyway
-  pack_tracking_area_update_reject(nas_tx, LIBLTE_MME_EMM_CAUSE_IMPLICITLY_DETACHED);
+  pack_tracking_area_update_reject(nas_tx, LIBLTE_MME_EMM_CAUSE_NO_SUITABLE_CELLS_IN_TRACKING_AREA);
+
   // Send reply
   m_s1ap->send_downlink_nas_transport(m_ecm_ctx.enb_ue_s1ap_id, m_ecm_ctx.mme_ue_s1ap_id, nas_tx, m_ecm_ctx.enb_sri);
   pool->deallocate(nas_tx);
