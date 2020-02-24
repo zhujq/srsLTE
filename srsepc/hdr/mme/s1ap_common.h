@@ -36,10 +36,11 @@ static const uint8_t MAX_BPLMN = 6;   // Maximum broadcasted PLMNs per TAC
 typedef struct {
   uint8_t                             mme_code;
   uint16_t                            mme_group;
-  uint16_t                            tac;          // 16-bit tac
-  uint16_t                            mcc;          // BCD-coded with 0xF filler
-  uint16_t                            mnc;          // BCD-coded with 0xF filler
-  uint16_t                            paging_timer; // Paging timer in sec (T3413)
+  uint16_t                            tac;              // 16-bit tac
+  uint16_t                            mcc;              // BCD-coded with 0xF filler
+  uint16_t                            mnc;              // BCD-coded with 0xF filler
+  uint16_t                            paging_timer;     // Paging timer in sec (T3413)
+  uint8_t                             tau_reject_cause; // TAU reject cause
   std::string                         mme_bind_addr;
   std::string                         mme_name;
   std::string                         dns_addr;

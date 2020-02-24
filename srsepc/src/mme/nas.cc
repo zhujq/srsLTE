@@ -42,6 +42,7 @@ nas::nas(nas_init_t args, nas_if_t itf, srslte::log* nas_log) :
   m_tac(args.tac),
   m_apn(args.apn),
   m_dns(args.dns),
+  m_tau_reject_cause(args.tau_reject_cause),
   m_t3413(args.paging_timer)
 {
   m_sec_ctx.integ_algo  = args.integ_algo;
@@ -798,7 +799,7 @@ bool nas::handle_tracking_area_update_request(uint32_t                m_tmsi,
   nas_tmp.m_ecm_ctx.enb_ue_s1ap_id = enb_ue_s1ap_id;
   nas_tmp.m_ecm_ctx.mme_ue_s1ap_id = s1ap->get_next_mme_ue_s1ap_id();
 
-  uint8_t cause = LIBLTE_MME_EMM_CAUSE_NO_SUITABLE_CELLS_IN_TRACKING_AREA;
+  uint8_t cause = args.tau_reject_cause;
   srslte::byte_buffer_t* nas_tx    = pool->allocate();
   nas_tmp.pack_tracking_area_update_reject(nas_tx, cause);
   s1ap->send_downlink_nas_transport(enb_ue_s1ap_id, nas_tmp.m_ecm_ctx.mme_ue_s1ap_id, nas_tx, *enb_sri);
@@ -1161,7 +1162,7 @@ bool nas::handle_tracking_area_update_request(srslte::byte_buffer_t* nas_rx)
   nas_tx = pool->allocate();
 
   // TODO we could enable integrity protection in some cases, but UE should comply anyway
-  uint8_t cause = LIBLTE_MME_EMM_CAUSE_NO_SUITABLE_CELLS_IN_TRACKING_AREA;
+  uint8_t cause = m_tau_reject_cause;
   pack_tracking_area_update_reject(nas_tx, cause);
 
   // Send reply

@@ -90,6 +90,7 @@ void parse_args(all_args_t* args, int argc, char* argv[])
   string   encryption_algo;
   string   integrity_algo;
   uint16_t paging_timer     = 0;
+  uint16_t tau_reject_cause = 0;
   uint32_t max_paging_queue = 0;
   string   spgw_bind_addr;
   string   sgi_if_addr;
@@ -122,11 +123,12 @@ void parse_args(all_args_t* args, int argc, char* argv[])
     ("mme.encryption_algo", bpo::value<string>(&encryption_algo)->default_value("EEA0"),     "Set preferred encryption algorithm for NAS layer ")
     ("mme.integrity_algo",  bpo::value<string>(&integrity_algo)->default_value("EIA1"),      "Set preferred integrity protection algorithm for NAS")
     ("mme.paging_timer",    bpo::value<uint16_t>(&paging_timer)->default_value(2),           "Set paging timer value in seconds (T3413)")
+    ("mme.tau_rej_cause",   bpo::value<uint16_t>(&tau_reject_cause)->default_value(10),       "Set TAU reject cause to send (default \"Implicitly Dettached\")")
     ("hss.db_file",         bpo::value<string>(&hss_db_file)->default_value("ue_db.csv"),    ".csv file that stores UE's keys")
     ("spgw.gtpu_bind_addr", bpo::value<string>(&spgw_bind_addr)->default_value("127.0.0.1"), "IP address of SP-GW for the S1-U connection")
     ("spgw.sgi_if_addr",    bpo::value<string>(&sgi_if_addr)->default_value("176.16.0.1"),   "IP address of TUN interface for the SGi connection")
     ("spgw.sgi_if_name",    bpo::value<string>(&sgi_if_name)->default_value("srs_spgw_sgi"), "Name of TUN interface for the SGi connection")
-    ("spgw.max_paging_queue", bpo::value<uint32_t>(&max_paging_queue)->default_value(100), "Max number of packets in paging queue")
+    ("spgw.max_paging_queue", bpo::value<uint32_t>(&max_paging_queue)->default_value(100),   "Max number of packets in paging queue")
 
     ("pcap.enable",   bpo::value<bool>(&args->mme_args.s1ap_args.pcap_enable)->default_value(false),         "Enable S1AP PCAP")
     ("pcap.filename", bpo::value<string>(&args->mme_args.s1ap_args.pcap_filename)->default_value("/tmp/epc.pcap"), "PCAP filename")
@@ -272,16 +274,17 @@ void parse_args(all_args_t* args, int argc, char* argv[])
     cout << "Using default mme.integrity_algo: EIA1" << endl;
   }
 
-  args->mme_args.s1ap_args.mme_bind_addr = mme_bind_addr;
-  args->mme_args.s1ap_args.mme_name      = mme_name;
-  args->mme_args.s1ap_args.dns_addr      = dns_addr;
-  args->mme_args.s1ap_args.mme_apn       = mme_apn;
-  args->mme_args.s1ap_args.paging_timer  = paging_timer;
-  args->spgw_args.gtpu_bind_addr         = spgw_bind_addr;
-  args->spgw_args.sgi_if_addr            = sgi_if_addr;
-  args->spgw_args.sgi_if_name            = sgi_if_name;
-  args->spgw_args.max_paging_queue       = max_paging_queue;
-  args->hss_args.db_file                 = hss_db_file;
+  args->mme_args.s1ap_args.mme_bind_addr    = mme_bind_addr;
+  args->mme_args.s1ap_args.mme_name         = mme_name;
+  args->mme_args.s1ap_args.dns_addr         = dns_addr;
+  args->mme_args.s1ap_args.mme_apn          = mme_apn;
+  args->mme_args.s1ap_args.paging_timer     = paging_timer;
+  args->mme_args.s1ap_args.tau_reject_cause = tau_reject_cause;
+  args->spgw_args.gtpu_bind_addr            = spgw_bind_addr;
+  args->spgw_args.sgi_if_addr               = sgi_if_addr;
+  args->spgw_args.sgi_if_name               = sgi_if_name;
+  args->spgw_args.max_paging_queue          = max_paging_queue;
+  args->hss_args.db_file                    = hss_db_file;
 
   // Apply all_level to any unset layers
   if (vm.count("log.all_level")) {

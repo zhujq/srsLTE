@@ -135,6 +135,7 @@ typedef struct {
   uint16_t                            mme_group;
   uint16_t                            tac;
   uint16_t                            paging_timer;
+  uint8_t                             tau_reject_cause;
   std::string                         apn;
   std::string                         dns;
   srslte::CIPHERING_ALGORITHM_ID_ENUM cipher_algo;
@@ -282,6 +283,8 @@ private:
   uint16_t    m_tac       = 0;
   std::string m_apn;
   std::string m_dns;
+
+  uint8_t m_tau_reject_cause = 0;
 
   // Timers timeout values
   uint16_t m_t3413 = 0;
